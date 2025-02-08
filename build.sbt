@@ -81,8 +81,29 @@ lazy val jniBindings = project
 val detectedJavaHome = settingKey[File]("")
 ThisBuild / detectedJavaHome := {
   val fromEnv = sys.env.get("JAVA_HOME").map(new File(_))
+  val log     = sLog.value
+  lazy val fromDiscovery = {
+    val disc = (deps / discoveredJavaHomes).value
+    disc
+      .flatMap { case (v, loc) =>
+        scala.util.Try(v.toInt).toOption.map(_ -> loc)
+      }
+      .toSeq
+      .sortBy(_._1)
+      .reverse
+      .headOption
+      .map(_._2)
+      .map { loc =>
+        log.warn(
+          s"Selecting $loc by choosing the highest available version from discoveredJavaHomes (no othe options worked)",
+        )
+        loc
+      }
+  }
+
   (deps / javaHome).value
     .orElse(fromEnv)
+    .orElse(fromDiscovery)
     .getOrElse(
       sys.error("No Java home detected!"),
     )

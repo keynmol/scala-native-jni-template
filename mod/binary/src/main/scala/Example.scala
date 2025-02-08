@@ -6,7 +6,7 @@ import scalanative.unsafe.*
     // Part 1: initialising basic JNI interface
     val iface = libjni.structs.JNIInvokeInterface_()
     val args  = JavaVMInitArgs()
-    (!args).version = jint(0x00010008) // JNI_VERSION_1_8
+    (!args).version = jint(JNI_VERSION_1_8)
 
     val customClasspath =
       sys.env
