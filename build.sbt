@@ -6,7 +6,7 @@ val Versions = new {
   val Scala = "3.6.3"
 }
 
-// This is the main project - a Scala Native binary that invokes 
+// This is the main project - a Scala Native binary that invokes
 // classes and methods from JVM and the given classpath
 lazy val binary =
   project
@@ -35,16 +35,16 @@ lazy val binary =
       },
     )
 
-// This project is only necessary if you wish to test your native code with 
-// java/scala code coming from dependencies - add your dependencies here (using normal 
+// This project is only necessary if you wish to test your native code with
+// java/scala code coming from dependencies - add your dependencies here (using normal
 // libraryDependencies syntax) and the classpath will be automatically passed to the binary project
 lazy val deps =
   project.in(file("mod/deps")).settings(scalaVersion := Versions.Scala)
 
-// This project hosts the bindings to JNI. 
+// This project hosts the bindings to JNI.
 // The bindings are already generated so you don't really need to regenerate them,
-// unless you have some special needs. It's left here only for reproducibility and 
-// demonstration purposes - you can easily just remove the module and move its scala files 
+// unless you have some special needs. It's left here only for reproducibility and
+// demonstration purposes - you can easily just remove the module and move its scala files
 // into your project.
 // Bindings made with sn-bindgen: https://sn-bindgen.indoorvivants.com/quickstart/index.html
 lazy val jniBindings = project
@@ -79,9 +79,14 @@ lazy val jniBindings = project
   )
 
 val detectedJavaHome = settingKey[File]("")
-ThisBuild / detectedJavaHome := (deps / javaHome).value.getOrElse(
-  sys.error("No Java home detected!"),
-)
+ThisBuild / detectedJavaHome := {
+  val fromEnv = sys.env.get("JAVA_HOME").map(new File(_))
+  (deps / javaHome).value
+    .orElse(fromEnv)
+    .getOrElse(
+      sys.error("No Java home detected!"),
+    )
+}
 
 val depsClasspath = taskKey[String]("")
 ThisBuild / depsClasspath := {
