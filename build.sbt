@@ -46,6 +46,7 @@ lazy val deps =
 // unless you have some special needs. It's left here only for reproducibility and 
 // demonstration purposes - you can easily just remove the module and move its scala files 
 // into your project.
+// Bindings made with sn-bindgen: https://sn-bindgen.indoorvivants.com/quickstart/index.html
 lazy val jniBindings = project
   .in(file("mod/jni-bindings"))
   .enablePlugins(ScalaNativePlugin, BindgenPlugin)

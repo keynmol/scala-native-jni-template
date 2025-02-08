@@ -30,8 +30,8 @@ import scalanative.unsafe.*
       args.asInstanceOf[Ptr[Byte]],
     )
     if res.value != JNI_OK then sys.error("Failed to create Java VMn")
-
-    // look at this shit
+    
+    // just look at this... horrors beyond human comprehension
     val jvm: JNINativeInterface_ = (!(!(!env)).value)
 
     // Part 2: using JNI interface to invoke built-in Java methods. Cann you guess which ones?
